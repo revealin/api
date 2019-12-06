@@ -1,3 +1,5 @@
+import EnvironmentService from './environment-service';
+
 /**
  * Services container class.
  * 
@@ -22,8 +24,20 @@ export default class ServiceContainer {
         return ServiceContainer.INSTANCE;
     }
 
+    private _env: EnvironmentService;
+
     /**
      * Creates a new services container.
      */
-    public constructor() {}
+    public constructor() {
+        this._env; // Automatic load
+    }
+
+    public get env() {
+        if (!this._env) {
+            this._env = new EnvironmentService(this);
+            console.log('Loaded environment service');
+        }
+        return this._env;
+    }
 }
