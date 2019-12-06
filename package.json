@@ -1,0 +1,19 @@
+{
+  "name": "revealin-api",
+  "version": "1.0.0",
+  "description": "Revealin API",
+  "main": "build/app.js",
+  "scripts": {
+    "start": "tsc -p tsconfig.json && node build/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/revealin/api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/revealin/api/issues"
+  },
+  "homepage": "https://github.com/revealin/api#readme"
+}
