@@ -1,2 +1,2 @@
-# Pinamax - API
+# Revealin - API
 (WIP)
