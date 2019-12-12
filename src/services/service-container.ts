@@ -38,7 +38,7 @@ export default class ServiceContainer {
      * Creates a new services container.
      */
     public constructor() {
-        this._env; // Automatic load
+        this.env; // Automatic load
     }
 
     public get env() {
