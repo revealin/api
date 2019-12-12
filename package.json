@@ -1,0 +1,39 @@
+{
+  "name": "revealin-api",
+  "version": "1.0.0",
+  "description": "Revealin API",
+  "main": "build/app.js",
+  "scripts": {
+    "start": "tsc -p tsconfig.json && node build/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/revealin/api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/revealin/api/issues"
+  },
+  "homepage": "https://github.com/revealin/api#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "helmet": "^3.21.2",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.15",
+    "mongoose": "^5.7.13"
+  },
+  "devDependencies": {
+    "@types/body-parser": "^1.17.1",
+    "@types/cors": "^2.8.6",
+    "@types/dotenv": "^8.2.0",
+    "@types/express": "^4.17.2",
+    "@types/helmet": "0.0.45",
+    "@types/lodash": "^4.14.149",
+    "@types/mongoose": "^5.5.32",
+    "@types/node": "^12.12.14"
+  }
+}
