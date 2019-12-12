@@ -30,8 +30,8 @@ export default class ServerService extends Service {
         console.log('Server started');
 
         // Connecting to database
-        // await this.container.db.connect(DB_HOST, DB_PORT, DB_NAME);
-        // console.log(`Connected to database ${DB_HOST}:${DB_PORT}/${DB_NAME}`);
+        await this.container.db.connect(DB_HOST, DB_PORT, DB_NAME);
+        console.log(`Connected to database ${DB_HOST}:${DB_PORT}/${DB_NAME}`);
     }
 
     /**
@@ -45,7 +45,7 @@ export default class ServerService extends Service {
         console.log('Server stopped');
 
         // Disconnecting from database
-        // await this.container.db.disconnect();
-        // console.log('Disconnected from database');
+        await this.container.db.disconnect();
+        console.log('Disconnected from database');
     }
 }

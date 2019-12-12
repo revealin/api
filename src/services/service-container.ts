@@ -2,6 +2,7 @@ import EnvironmentService from './environment-service';
 import ControllerService from './controller-service';
 import ExpressService from './express-service';
 import ServerService from './server-service';
+import DatabaseService from './database-service';
 
 /**
  * Services container class.
@@ -30,6 +31,7 @@ export default class ServiceContainer {
     private _env: EnvironmentService;
     private _express: ExpressService;
     private _srv: ServerService;
+    private _db: DatabaseService;
     private _controllers: ControllerService;
 
     /**
@@ -61,6 +63,14 @@ export default class ServiceContainer {
             console.log('Loaded server service');
         }
         return this._srv;
+    }
+
+    public get db() {
+        if (!this._db) {
+            this._db = new DatabaseService(this);
+            console.log('Loaded database service');
+        }
+        return this._db;
     }
 
     public get controllers() {
