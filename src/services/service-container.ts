@@ -1,5 +1,6 @@
 import EnvironmentService from './environment-service';
 import ControllerService from './controller-service';
+import ExpressService from './express-service';
 
 /**
  * Services container class.
@@ -26,6 +27,7 @@ export default class ServiceContainer {
     }
 
     private _env: EnvironmentService;
+    private _express: ExpressService;
     private _controllers: ControllerService;
 
     /**
@@ -41,6 +43,14 @@ export default class ServiceContainer {
             console.log('Loaded environment service');
         }
         return this._env;
+    }
+
+    public get express() {
+        if (!this._express) {
+            this._express = new ExpressService(this);
+            console.log('Loaded Express service');
+        }
+        return this._controllers;
     }
 
     public get controllers() {
