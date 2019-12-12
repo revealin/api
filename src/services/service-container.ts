@@ -1,4 +1,5 @@
 import EnvironmentService from './environment-service';
+import ControllerService from './controller-service';
 
 /**
  * Services container class.
@@ -25,6 +26,7 @@ export default class ServiceContainer {
     }
 
     private _env: EnvironmentService;
+    private _controllers: ControllerService;
 
     /**
      * Creates a new services container.
@@ -39,5 +41,13 @@ export default class ServiceContainer {
             console.log('Loaded environment service');
         }
         return this._env;
+    }
+
+    public get controllers() {
+        if (!this._controllers) {
+            this._controllers = new ControllerService(this);
+            console.log('Loaded controllers service');
+        }
+        return this._controllers;
     }
 }
