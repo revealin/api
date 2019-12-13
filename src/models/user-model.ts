@@ -78,7 +78,8 @@ function createSchema(container: ServiceContainer) {
         },
         description: {
             type: Schema.Types.String,
-            required: [true, 'Description is required']
+            required: [true, 'Description is required'],
+            maxlength: [1000, 'Description is too long, it\'s length must be smaller than 1000 characters']
         },
         banned: {
             type: Schema.Types.Boolean,
