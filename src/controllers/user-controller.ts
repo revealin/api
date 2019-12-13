@@ -19,11 +19,13 @@ export default class UserController extends Controller {
         this.modifyHandler = this.modifyHandler.bind(this);
         this.updateHandler = this.updateHandler.bind(this);
         this.deleteHandler = this.deleteHandler.bind(this);
+        this.createMessageHandler = this.createMessageHandler.bind(this);
         this.registerEndpoint({ method: 'GET', uri: '/', handlers: [this.getAllHandler], description: 'Gets all users' });
         this.registerEndpoint({ method: 'GET', uri: '/:id', handlers: [this.getSpecificHandler], description: 'Gets a specific user' });
         this.registerEndpoint({ method: 'PUT', uri: '/:id', handlers: [this.modifyHandler], description: 'Modifies an user' });
         this.registerEndpoint({ method: 'PATCH', uri: '/:id', handlers: [this.updateHandler], description: 'Updates an user' });
         this.registerEndpoint({ method: 'DELETE', uri: '/:id', handlers: [this.deleteHandler], description: 'Deletes an user' });
+        this.registerEndpoint({ method: 'POST', uri: '/:id/messages', handlers: [this.createMessageHandler], description: 'Creates a new message from an user' })
     }
 
     /**
@@ -179,6 +181,35 @@ export default class UserController extends Controller {
                 return res.status(404).json({ error: 'User not found' });
             }
             return res.status(204).json();
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: err.message });
+        }
+    }
+
+    /**
+     * Creates a new message from an user.
+     * 
+     * This method is a handler / endpoint :
+     * - Method : `POST`
+     * - URI : `/:id/messages`
+     * 
+     * @param req Express request
+     * @param res Express response
+     * @async
+     */
+    public async createMessageHandler(req: Request, res: Response): Promise<any> {
+        try {
+            const user = await this.container.db.users.findById(req.params.id);
+            if (!user) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+            const message = await this.container.db.messages.create({
+                sender: user.id,
+                receiver: req.body.receiver,
+                content: req.body.content
+            });
+            return res.status(201).json({ id: message.id });
         } catch (err) {
             console.error(err);
             return res.status(500).json({ error: err.message });
