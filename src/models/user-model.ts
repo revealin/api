@@ -10,7 +10,7 @@ export interface UserAttributes extends Attributes {
     name: string;
     password: string;
     gender: 'male' | 'female';
-    age: number;
+    birth: Date;
     description: string;
     banned: boolean;
     localization: {
@@ -47,13 +47,13 @@ function createSchema(container: ServiceContainer) {
         name: {
             type: Schema.Types.String,
             required: [true, 'User name is required'],
-            min: [3, 'Name is too small, it\'s length must be between 3 and 30 characters'],
-            max: [30, 'Name is too long, it\'s length must be between 3 and 30 characters']
+            minlength: [3, 'Name is too small, it\'s length must be between 3 and 30 characters'],
+            maxlength: [30, 'Name is too long, it\'s length must be between 3 and 30 characters']
         },
         password: {
             type: Schema.Types.String,
             required: [true, 'User password is required'],
-            min: [8, 'Password is too small, it\'s length must be greater than 8 characters'],
+            minlength: [8, 'Password is too small, it\'s length must be greater than 8 characters'],
             select: false
         },
         gender: {
@@ -61,10 +61,13 @@ function createSchema(container: ServiceContainer) {
             required: [true, 'Gender is required'],
             enum: ['male', 'female']
         },
-        age: {
-            type: Schema.Types.Number,
-            required: [true, 'Age is required'],
-            min: [18, 'Age is too small, it must be greater than 18']
+        birth: {
+            type: Schema.Types.Date,
+            required: [true, 'Birth date is required'],
+            max: [() => {
+                const now = new Date();
+                return new Date(now.getFullYear() - 18, now.getMonth(), now.getDate());
+            }, 'Age is too small, it must be greater than 18']
         },
         description: {
             type: Schema.Types.String,
