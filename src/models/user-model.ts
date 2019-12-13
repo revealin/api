@@ -26,6 +26,13 @@ export interface UserAttributes extends Attributes {
  */
 export interface UserInstance extends UserAttributes, Document {}
 
+/**
+ * Creates the user model.
+ * 
+ * @param container Services container
+ * @param mongoose Mongoose instance
+ * @returns User model
+ */
 export default function createModel(container: ServiceContainer, mongoose: Mongoose): Model<UserInstance> {
     return mongoose.model('User', createSchema(container), 'users');
 }
