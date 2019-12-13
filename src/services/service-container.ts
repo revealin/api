@@ -3,6 +3,7 @@ import ControllerService from './controller-service';
 import ExpressService from './express-service';
 import ServerService from './server-service';
 import DatabaseService from './database-service';
+import AuthenticationService from './authentication-service';
 
 /**
  * Services container class.
@@ -33,6 +34,7 @@ export default class ServiceContainer {
     private _srv: ServerService;
     private _db: DatabaseService;
     private _controllers: ControllerService;
+    private _auth: AuthenticationService;
 
     /**
      * Creates a new services container.
@@ -79,5 +81,13 @@ export default class ServiceContainer {
             console.log('Loaded controllers service');
         }
         return this._controllers;
+    }
+
+    public get auth() {
+        if (!this._auth) {
+            this._auth = new AuthenticationService(this);
+            console.log('Loaded authentication service');
+        }
+        return this._auth;
     }
 }
