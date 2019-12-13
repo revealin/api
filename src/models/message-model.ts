@@ -55,6 +55,8 @@ function createSchema(container: ServiceContainer) {
             type: Schema.Types.Boolean,
             default: false
         }
+    }, {
+        timestamps: true
     });
 
     return schema;
