@@ -4,6 +4,7 @@ import Controller from '../controllers/controller';
 import { Application } from 'express';
 import AuthenticationController from '../controllers/authentication-controller';
 import UserController from '../controllers/user-controller';
+import MessageController from '../controllers/message-controller';
 
 /**
  * Controllers service class.
@@ -25,7 +26,8 @@ export default class ControllerService extends Service {
         super(container);
         this.controllers = [
             new AuthenticationController(container),
-            new UserController(container)
+            new UserController(container),
+            new MessageController(container)
         ];
     }
 
