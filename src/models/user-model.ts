@@ -66,7 +66,7 @@ function createSchema(container: ServiceContainer) {
             required: [true, 'Birth date is required'],
             max: [() => {
                 const now = new Date();
-                return new Date(now.getFullYear() - 18, now.getMonth(), now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
+                return new Date(now.getFullYear() - 18, now.getMonth(), now.getDate());
             }, 'Age is too small, it must be greater than 18']
         },
         description: {
