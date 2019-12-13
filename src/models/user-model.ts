@@ -47,13 +47,13 @@ function createSchema(container: ServiceContainer) {
         name: {
             type: Schema.Types.String,
             required: [true, 'User name is required'],
-            min: [3, 'Name is too small, it\'s length must be between 3 and 30 characters'],
-            max: [30, 'Name is too long, it\'s length must be between 3 and 30 characters']
+            minlength: [3, 'Name is too small, it\'s length must be between 3 and 30 characters'],
+            maxlength: [30, 'Name is too long, it\'s length must be between 3 and 30 characters']
         },
         password: {
             type: Schema.Types.String,
             required: [true, 'User password is required'],
-            min: [8, 'Password is too small, it\'s length must be greater than 8 characters'],
+            minlength: [8, 'Password is too small, it\'s length must be greater than 8 characters'],
             select: false
         },
         gender: {
