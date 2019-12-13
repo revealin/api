@@ -2,6 +2,7 @@ import Service from './service';
 import ServiceContainer from './service-container';
 import { Mongoose, Model } from 'mongoose';
 import createUserModel, { UserInstance } from '../models/user-model';
+import createMessageModel, { MessageInstance } from '../models/message-model';
 
 /**
  * Database service class.
@@ -12,6 +13,7 @@ export default class DatabaseService extends Service {
 
     private readonly mongoose: Mongoose;
     public readonly users: Model<UserInstance>;
+    public readonly messages: Model<MessageInstance>;
 
     /**
      * Creates a new database service.
@@ -22,6 +24,7 @@ export default class DatabaseService extends Service {
         super(container);
         this.mongoose = this.createMongoose();
         this.users = createUserModel(container, this.mongoose);
+        this.messages = createMessageModel(container, this.mongoose);
     }
 
     /**
