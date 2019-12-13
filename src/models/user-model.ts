@@ -19,6 +19,10 @@ export interface UserAttributes extends Attributes {
     }
     likes: UserInstance[];
     nopes: UserInstance[];
+    reports: [{
+        reporter: UserInstance;
+        reason: string;
+    }];
 }
 
 /**
@@ -98,6 +102,10 @@ function createSchema(container: ServiceContainer) {
             type: Schema.Types.ObjectId,
             ref: 'User',
             default: []
+        }],
+        reports: [{
+            type: createReportSchema(),
+            default: []
         }]
     }, {
         timestamps: true
@@ -132,6 +140,27 @@ function createLocalizationSchema() {
         lon: {
             type: Schema.Types.Number,
             required: [true, 'Longitude is required']
+        }
+    }, {
+        _id: false
+    });
+
+    return schema;
+}
+
+/**
+ * Creates the report sub-schema.
+ * @returns Report sub-schema
+ */
+function createReportSchema() {
+    const schema = new Schema({
+        reporter: {
+            type: Schema.Types.ObjectId,
+            required: [true, 'Reporter is required']
+        },
+        reason: {
+            type: Schema.Types.String,
+            required: [true, 'Reason is required']
         }
     }, {
         _id: false
