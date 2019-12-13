@@ -10,7 +10,7 @@ export interface UserAttributes extends Attributes {
     name: string;
     password: string;
     gender: 'male' | 'female';
-    age: number;
+    birth: Date;
     description: string;
     banned: boolean;
     localization: {
@@ -61,10 +61,13 @@ function createSchema(container: ServiceContainer) {
             required: [true, 'Gender is required'],
             enum: ['male', 'female']
         },
-        age: {
-            type: Schema.Types.Number,
-            required: [true, 'Age is required'],
-            min: [18, 'Age is too small, it must be greater than 18']
+        birth: {
+            type: Schema.Types.Date,
+            required: [true, 'Birth date is required'],
+            max: [() => {
+                const now = new Date();
+                return new Date(now.getFullYear() - 18, now.getMonth(), now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
+            }, 'Age is too small, it must be greater than 18']
         },
         description: {
             type: Schema.Types.String,
