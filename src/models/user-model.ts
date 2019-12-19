@@ -19,6 +19,7 @@ export interface UserAttributes extends Attributes {
     }
     likes: UserInstance[];
     nopes: UserInstance[];
+    reveals: UserInstance[];
     reports: [{
         reporter: UserInstance;
         reason: string;
@@ -103,6 +104,11 @@ function createSchema(container: ServiceContainer) {
             default: []
         }],
         nopes: [{
+            type: Schema.Types.ObjectId,
+            ref: 'User',
+            default: []
+        }],
+        reveals: [{
             type: Schema.Types.ObjectId,
             ref: 'User',
             default: []
