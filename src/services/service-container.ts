@@ -5,6 +5,7 @@ import ServerService from './server-service';
 import DatabaseService from './database-service';
 import AuthenticationService from './authentication-service';
 import ConfigurationService from './configuration-service';
+import PermissionService from './permission-service';
 
 /**
  * Services container class.
@@ -37,6 +38,7 @@ export default class ServiceContainer {
     private _controllers: ControllerService;
     private _auth: AuthenticationService;
     private _config: ConfigurationService;
+    private _perms: PermissionService;
 
     /**
      * Creates a new services container.
@@ -99,5 +101,13 @@ export default class ServiceContainer {
             console.log('Loaded configuration service');
         }
         return this._config;
+    }
+
+    public get perms() {
+        if (!this._perms) {
+            this._perms = new PermissionService(this);
+            console.log('Loaded permissions service');
+        }
+        return this._perms;
     }
 }
