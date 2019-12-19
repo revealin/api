@@ -106,6 +106,7 @@ export default class UserController extends Controller {
             user.localization = req.body.localization;
             user.likes = req.body.likes;
             user.nopes = req.body.nopes;
+            user.reveals = req.body.reveals;
             await user.save();
             return res.status(200).json();
         } catch (err) {
@@ -160,6 +161,9 @@ export default class UserController extends Controller {
             }
             if (req.body.nopes) {
                 user.nopes = req.body.nopes;
+            }
+            if (req.body.reveals) {
+                user.reveals = req.body.reveals;
             }
             await user.save();
             return res.status(200).json();
