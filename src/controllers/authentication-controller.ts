@@ -17,7 +17,7 @@ export default class AuthenticationController extends Controller {
         this.signupHandler = this.signupHandler.bind(this);
         this.signinHandler = this.signinHandler.bind(this);
         this.registerEndpoint({ method: 'POST', uri: '/signup', handlers: [this.signupHandler], description: 'Signup / Register' });
-        this.registerEndpoint({ method: 'GET', uri: '/signin', handlers: [this.signinHandler], description: 'Signin / Login' });
+        this.registerEndpoint({ method: 'POST', uri: '/signin', handlers: [this.signinHandler], description: 'Signin / Login' });
     }
 
     /**
@@ -54,7 +54,7 @@ export default class AuthenticationController extends Controller {
      * Signin / Login.
      * 
      * This method is a handler / endpoint :
-     * - Method : `GET`
+     * - Method : `POST`
      * - URI : `/signin`
      * 
      * @param req Express request
