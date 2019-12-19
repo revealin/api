@@ -156,6 +156,7 @@ function createReportSchema() {
     const schema = new Schema({
         reporter: {
             type: Schema.Types.ObjectId,
+            ref: 'User',
             required: [true, 'Reporter is required']
         },
         reason: {
