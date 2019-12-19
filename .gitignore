@@ -6,3 +6,6 @@ build/
 
 # Environment
 .env
+
+# Configuration
+config/permissions.json
