@@ -23,6 +23,10 @@ export interface UserAttributes extends Attributes {
         reporter: UserInstance;
         reason: string;
     }];
+    pictures: [{
+        base64: string;
+        order: number;
+    }];
 }
 
 /**
@@ -106,6 +110,10 @@ function createSchema(container: ServiceContainer) {
         reports: [{
             type: createReportSchema(),
             default: []
+        }],
+        pictures: [{
+            type: createPictureSchema(),
+            default: []
         }]
     }, {
         timestamps: true
@@ -129,6 +137,7 @@ function createSchema(container: ServiceContainer) {
 
 /**
  * Creates the localization sub-schema.
+ * 
  * @returns Localization sub-schema
  */
 function createLocalizationSchema() {
@@ -150,6 +159,7 @@ function createLocalizationSchema() {
 
 /**
  * Creates the report sub-schema.
+ * 
  * @returns Report sub-schema
  */
 function createReportSchema() {
@@ -164,6 +174,26 @@ function createReportSchema() {
         }
     }, {
         _id: false
+    });
+
+    return schema;
+}
+
+/**
+ * Creates the picture sub-schema.
+ * 
+ * @returns Picture sub-schema
+ */
+function createPictureSchema() {
+    const schema = new Schema({
+        base64: {
+            type: Schema.Types.String,
+            required: [true, 'Base64 is required']
+        },
+        order: {
+            type: Schema.Types.Number,
+            required: [true, 'Order is required']
+        }
     });
 
     return schema;

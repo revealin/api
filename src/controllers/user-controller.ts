@@ -21,6 +21,8 @@ export default class UserController extends Controller {
         this.deleteHandler = this.deleteHandler.bind(this);
         this.createMessageHandler = this.createMessageHandler.bind(this);
         this.createReportHandler = this.createReportHandler.bind(this);
+        this.createPictureHandler = this.createPictureHandler.bind(this);
+        this.sortPictureHandler = this.sortPictureHandler.bind(this);
         this.registerEndpoint({ method: 'GET', uri: '/', handlers: [this.getAllHandler], description: 'Gets all users' });
         this.registerEndpoint({ method: 'GET', uri: '/:id', handlers: [this.getSpecificHandler], description: 'Gets a specific user' });
         this.registerEndpoint({ method: 'PUT', uri: '/:id', handlers: [this.modifyHandler], description: 'Modifies an user' });
@@ -28,6 +30,8 @@ export default class UserController extends Controller {
         this.registerEndpoint({ method: 'DELETE', uri: '/:id', handlers: [this.deleteHandler], description: 'Deletes an user' });
         this.registerEndpoint({ method: 'POST', uri: '/:id/messages', handlers: [this.createMessageHandler], description: 'Creates a new message from an user' });
         this.registerEndpoint({ method: 'POST', uri: '/:id/reports', handlers: [this.createReportHandler], description: 'Creates a new report for an user' });
+        this.registerEndpoint({ method: 'POST', uri: '/:id/pictures', handlers: [this.createPictureHandler], description: 'Creates a new picture for an user' });
+        this.registerEndpoint({ method: 'PATCH', uri: '/:id/pictures/:pictureId', handlers: [this.sortPictureHandler], description: 'Sorts a picture for an user' });
     }
 
     /**
@@ -241,6 +245,74 @@ export default class UserController extends Controller {
             });
             await user.save();
             return res.status(201).json();
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: err.message });
+        }
+    }
+
+    /**
+     * Creates a new picture for an user.
+     * 
+     * This method is a handler / endpoint :
+     * - Method : `POST`
+     * - URI : `/:id/pictures`
+     * 
+     * @param req Express request
+     * @param res Express response
+     * @async
+     */
+    public async createPictureHandler(req: Request, res: Response): Promise<any> {
+        try {
+            const user = await this.container.db.users.findById(req.params.id);
+            if (!user) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+            user.pictures.push({
+                base64: req.body.base64,
+                order: user.pictures.length
+            });
+            await user.save();
+            return res.status(201).json();
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: err.message });
+        }
+    }
+
+    /**
+     * Sorts a picture for an user.
+     * 
+     * This method is a handler / endpoint :
+     * - Method : `PATCH`
+     * - URI : `/:id/pictures/:pictureId`
+     * 
+     * @param req Express request
+     * @param res Express response
+     * @async
+     */
+    public async sortPictureHandler(req: Request, res: Response): Promise<any> {
+        try {
+            const user = await this.container.db.users.findById(req.params.id);
+            if (!user) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+            const pic = (<any> user.pictures).id(req.params.pictureId);
+            if (!pic) {
+                return res.status(404).json({ error: 'Picture not found' });
+            }
+            const order = req.body.order;
+            if (order < 0 || order >= user.pictures.length) {
+                return res.status(400).json({ error: `Invalid order, it must be between 0 and ${user.pictures.length}` });
+            }
+            user.pictures.map(otherPic => {
+                if (otherPic.order === order) {
+                    otherPic.order = pic.order;
+                }
+            });
+            pic.order = order;
+            await user.save();
+            return res.status(200).json();
         } catch (err) {
             console.error(err);
             return res.status(500).json({ error: err.message });
