@@ -9,6 +9,7 @@ export interface UserAttributes extends Attributes {
     email: string;
     name: string;
     password: string;
+    role: string;
     gender: 'male' | 'female';
     birth: Date;
     description: string;
@@ -52,6 +53,8 @@ export default function createModel(container: ServiceContainer, mongoose: Mongo
  * @returns User schema
  */
 function createSchema(container: ServiceContainer) {
+    const roles = Object.keys(container.config.permissions);
+
     const schema = new Schema({
         email: {
             type: Schema.Types.String,
@@ -64,6 +67,11 @@ function createSchema(container: ServiceContainer) {
             required: [true, 'User name is required'],
             minlength: [3, 'Name is too small, it\'s length must be between 3 and 30 characters'],
             maxlength: [30, 'Name is too long, it\'s length must be between 3 and 30 characters']
+        },
+        role: {
+            type: Schema.Types.String,
+            enum: roles,
+            default: roles.find(role => container.config.permissions[role].default)
         },
         password: {
             type: Schema.Types.String,
