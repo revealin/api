@@ -99,6 +99,7 @@ export default class UserController extends Controller {
             user.email = req.body.email;
             user.name = req.body.name;
             user.password = req.body.password;
+            user.role = req.body.role;
             user.gender = req.body.gender;
             user.birth = req.body.birth;
             user.description = req.body.description;
@@ -139,6 +140,9 @@ export default class UserController extends Controller {
             }
             if (req.body.password) {
                 user.password = req.body.password;
+            }
+            if (req.body.role) {
+                user.role = req.body.role;
             }
             if (req.body.gender) {
                 user.gender = req.body.gender;
