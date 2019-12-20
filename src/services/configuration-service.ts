@@ -4,6 +4,8 @@ import ServiceContainer from './service-container';
 
 export default class ConfigurationService extends Service {
 
+    private _permissions: PermissionsConfiguration;
+
     public constructor(container: ServiceContainer) {
         super(container);
     }
@@ -40,6 +42,29 @@ export default class ConfigurationService extends Service {
             case 'JSON': return <T> JSON.parse(fs.readFileSync(path, 'utf-8'));
             default: throw new ConfigurationError(`Configuration type "${type}" is not supported`);
         }
+    }
+    
+    /**
+     * Returns permissions configuration.
+     * 
+     * @returns Permissions configuration
+     */
+    public get permissions(): PermissionsConfiguration {
+        if (!this._permissions) {
+            this._permissions = this.loadSync('config/permissions.json', 'JSON');
+            console.log(`Loaded permissions configuration`);
+        }
+        return this._permissions;
+    }
+}
+
+/**
+ * Permissions configuration interface.
+ */
+export interface PermissionsConfiguration {
+    [key: string]: {
+        default?: boolean;
+        permissions: string[];
     }
 }
 
