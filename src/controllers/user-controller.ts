@@ -316,7 +316,7 @@ export default class UserController extends Controller {
             if (order < 0 || order >= user.pictures.length) {
                 return res.status(400).json({ error: `Invalid order, it must be between 0 and ${user.pictures.length - 1}` });
             }
-            user.pictures.find(anotherPic => anotherPic.order === order).order = pic.order;
+            user.pictures.find(currentPic => currentPic.order === order).order = pic.order;
             pic.order = order;
             await user.save();
             return res.status(200).json();
