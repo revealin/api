@@ -6,6 +6,7 @@ import DatabaseService from './database-service';
 import AuthenticationService from './authentication-service';
 import ConfigurationService from './configuration-service';
 import PermissionService from './permission-service';
+import WebSocketService from './websocket-service';
 
 /**
  * Services container class.
@@ -39,6 +40,7 @@ export default class ServiceContainer {
     private _auth: AuthenticationService;
     private _config: ConfigurationService;
     private _perms: PermissionService;
+    private _socket: WebSocketService;
 
     /**
      * Creates a new services container.
@@ -109,5 +111,13 @@ export default class ServiceContainer {
             console.log('Loaded permissions service');
         }
         return this._perms;
+    }
+
+    public get socket() {
+        if (!this._socket) {
+            this._socket = new WebSocketService(this);
+            console.log('Loaded websocket service');
+        }
+        return this._socket;
     }
 }
