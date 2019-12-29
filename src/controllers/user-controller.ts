@@ -1,6 +1,7 @@
 import Controller from './controller';
 import ServiceContainer from '../services/service-container';
 import { Request, Response } from 'express';
+import _ from 'lodash';
 
 /**
  * Users controller.
@@ -23,6 +24,7 @@ export default class UserController extends Controller {
         this.createReportHandler = this.createReportHandler.bind(this);
         this.createPictureHandler = this.createPictureHandler.bind(this);
         this.sortPictureHandler = this.sortPictureHandler.bind(this);
+        this.deletePictureHandler = this.deletePictureHandler.bind(this);
         this.registerEndpoint({ method: 'GET', uri: '/', handlers: [this.getAllHandler], description: 'Gets all users' });
         this.registerEndpoint({ method: 'GET', uri: '/:id', handlers: [this.getSpecificHandler], description: 'Gets a specific user' });
         this.registerEndpoint({ method: 'PUT', uri: '/:id', handlers: [this.modifyHandler], description: 'Modifies an user' });
@@ -32,6 +34,7 @@ export default class UserController extends Controller {
         this.registerEndpoint({ method: 'POST', uri: '/:id/reports', handlers: [this.createReportHandler], description: 'Creates a new report for an user' });
         this.registerEndpoint({ method: 'POST', uri: '/:id/pictures', handlers: [this.createPictureHandler], description: 'Creates a new picture for an user' });
         this.registerEndpoint({ method: 'PATCH', uri: '/:id/pictures/:pictureId', handlers: [this.sortPictureHandler], description: 'Sorts a picture for an user' });
+        this.registerEndpoint({ method: 'DELETE', uri: '/:id/pictures/:pictureId', handlers: [this.deletePictureHandler], description: 'Deletes a picture for an user' });
     }
 
     /**
@@ -311,16 +314,47 @@ export default class UserController extends Controller {
             }
             const order = req.body.order;
             if (order < 0 || order >= user.pictures.length) {
-                return res.status(400).json({ error: `Invalid order, it must be between 0 and ${user.pictures.length}` });
+                return res.status(400).json({ error: `Invalid order, it must be between 0 and ${user.pictures.length - 1}` });
             }
-            user.pictures.map(otherPic => {
-                if (otherPic.order === order) {
-                    otherPic.order = pic.order;
-                }
-            });
+            user.pictures.find(currentPic => currentPic.order === order).order = pic.order;
             pic.order = order;
             await user.save();
             return res.status(200).json();
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: err.message });
+        }
+    }
+
+    /**
+     * Deletes a picture for an user.
+     * 
+     * This method is a handler / endpoint :
+     * - Method : `DELETE`
+     * - URI : `/:id/pictures/:pictureId`
+     * 
+     * @param req Express request
+     * @param res Express response
+     * @async
+     */
+    public async deletePictureHandler(req: Request, res: Response): Promise<any> {
+        try {
+            const user = await this.container.db.users.findById(req.params.id);
+            if (!user) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+            const pic = (<any> user.pictures).id(req.params.pictureId);
+            if (!pic) {
+                return res.status(404).json({ error: 'Picture not found' });
+            }
+            _.remove(user.pictures, currentPic => currentPic === pic);
+            user.pictures.filter(anotherPic => anotherPic.order > pic.order).map(anotherPic => {
+                anotherPic.order--;
+                return anotherPic;
+            });
+            user.markModified('pictures');
+            await user.save();
+            return res.status(204).json();
         } catch (err) {
             console.error(err);
             return res.status(500).json({ error: err.message });
