@@ -29,6 +29,10 @@ export default class ServerService extends Service {
         await this.container.express.start(<any> API_PORT);
         console.log('Server started');
 
+        // Starting websocket
+        this.container.socket.start(<any> process.env.WEB_SOCKET_PORT);
+        console.log('Websocket started');
+
         // Connecting to database
         await this.container.db.connect(DB_HOST, DB_PORT, DB_NAME);
         console.log(`Connected to database ${DB_HOST}:${DB_PORT}/${DB_NAME}`);
@@ -43,6 +47,10 @@ export default class ServerService extends Service {
         // Stopping server
         await this.container.express.stop();
         console.log('Server stopped');
+
+        // Stopping websocket
+        this.container.socket.stop();
+        console.log('Websocket stopped');
 
         // Disconnecting from database
         await this.container.db.disconnect();
