@@ -1,7 +1,6 @@
 import Service from './service';
 import ServiceContainer from './service-container';
 import io, { Server, Socket } from 'socket.io';
-import _ from 'lodash';
 
 /**
  * Websocket service class.
