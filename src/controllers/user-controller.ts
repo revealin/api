@@ -16,7 +16,7 @@ export default class UserController extends Controller {
      */
     public constructor(container: ServiceContainer) {
         super(container, '/users');
-        this.getMe = this.getMe.bind(this);
+        this.getMeHandler = this.getMeHandler.bind(this);
         this.getAllHandler = this.getAllHandler.bind(this);
         this.getSpecificHandler = this.getSpecificHandler.bind(this);
         this.modifyHandler = this.modifyHandler.bind(this);
@@ -27,7 +27,7 @@ export default class UserController extends Controller {
         this.createPictureHandler = this.createPictureHandler.bind(this);
         this.sortPictureHandler = this.sortPictureHandler.bind(this);
         this.deletePictureHandler = this.deletePictureHandler.bind(this);
-        this.registerEndpoint({ method: 'GET', uri: '/me', handlers: [this.container.auth.authenticateHandler, this.getMe], description: 'Gets the user from a provided token' });
+        this.registerEndpoint({ method: 'GET', uri: '/me', handlers: [this.container.auth.authenticateHandler, this.getMeHandler], description: 'Gets the user from a provided token' });
         this.registerEndpoint({ method: 'GET', uri: '/', handlers: [this.getAllHandler], description: 'Gets all users' });
         this.registerEndpoint({ method: 'GET', uri: '/:id', handlers: [this.getSpecificHandler], description: 'Gets a specific user' });
         this.registerEndpoint({ method: 'PUT', uri: '/:id', handlers: [this.modifyHandler], description: 'Modifies an user' });
@@ -51,7 +51,7 @@ export default class UserController extends Controller {
      * @param res Express response
      * @async
      */
-    public async getMe(req: Request, res: Response): Promise<any> {
+    public async getMeHandler(req: Request, res: Response): Promise<any> {
         try {
             let user: UserInstance;
             if (res.locals.user) { // First check : headers
