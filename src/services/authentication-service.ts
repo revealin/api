@@ -18,6 +18,8 @@ export default class AuthenticationService extends Service {
      */
     public constructor(container: ServiceContainer) {
         super(container);
+        this.authenticateHandler = this.authenticateHandler.bind(this);
+        this.isAuthenticatedHandler = this.isAuthenticatedHandler.bind(this);
     }
 
     /**
