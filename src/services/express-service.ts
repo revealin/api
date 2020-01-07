@@ -2,7 +2,6 @@ import Service from './service';
 import ServiceContainer from './service-container';
 import express from 'express';
 import { Server } from 'http';
-import bodyParser from 'body-parser';
 import helmet from 'helmet';
 import cors from 'cors';
 
@@ -78,8 +77,11 @@ export default class ExpressService extends Service {
         const app: express.Application = express();
 
         // Security
-        app.use(bodyParser.urlencoded({ extended: true }));
-        app.use(bodyParser.json());
+        app.use(express.urlencoded({
+            extended: true,
+            limit: '50mb'
+        }));
+        app.use(express.json());
         app.use(helmet());
         app.use(cors());
 
