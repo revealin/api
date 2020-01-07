@@ -312,6 +312,10 @@ export default class UserController extends Controller {
             if (!user) {
                 return res.status(404).json({ error: 'User not found' });
             }
+            const picSize = this.container.pics.size(req.body.base64);
+            if (picSize > Number(process.env.MAX_PICTURE_SIZE)) {
+                return res.status(400).json({ error: `Picture is too large : ${picSize} > ${process.env.MAX_PICTURE_SIZE}` });
+            }
             user.pictures.push({
                 base64: req.body.base64,
                 order: user.pictures.length

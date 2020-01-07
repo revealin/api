@@ -9,5 +9,6 @@ declare namespace NodeJS {
         TOKEN_KEY: string;
         TOKEN_EXP: string;
         HASH_SALT: string;
+        MAX_PICTURE_SIZE: string;
     }
 }

@@ -7,6 +7,7 @@ import AuthenticationService from './authentication-service';
 import ConfigurationService from './configuration-service';
 import PermissionService from './permission-service';
 import WebSocketService from './websocket-service';
+import PictureService from './picture-service';
 
 /**
  * Services container class.
@@ -41,6 +42,7 @@ export default class ServiceContainer {
     private _config: ConfigurationService;
     private _perms: PermissionService;
     private _socket: WebSocketService;
+    private _pics: PictureService;
 
     /**
      * Creates a new services container.
@@ -119,5 +121,13 @@ export default class ServiceContainer {
             console.log('Loaded websocket service');
         }
         return this._socket;
+    }
+
+    public get pics() {
+        if (!this._pics) {
+            this._pics = new PictureService(this);
+            console.log('Loaded pictures service');
+        }
+        return this._pics;
     }
 }
