@@ -19,6 +19,7 @@ export default class UserController extends Controller {
         this.getMeHandler = this.getMeHandler.bind(this);
         this.getAllHandler = this.getAllHandler.bind(this);
         this.getSpecificHandler = this.getSpecificHandler.bind(this);
+        this.getAroundHandler = this.getAroundHandler.bind(this);
         this.modifyHandler = this.modifyHandler.bind(this);
         this.updateHandler = this.updateHandler.bind(this);
         this.deleteHandler = this.deleteHandler.bind(this);
@@ -30,6 +31,7 @@ export default class UserController extends Controller {
         this.registerEndpoint({ method: 'GET', uri: '/me', handlers: [this.container.auth.authenticateHandler, this.getMeHandler], description: 'Gets the user from a provided token' });
         this.registerEndpoint({ method: 'GET', uri: '/', handlers: [this.getAllHandler], description: 'Gets all users' });
         this.registerEndpoint({ method: 'GET', uri: '/:id', handlers: [this.getSpecificHandler], description: 'Gets a specific user' });
+        this.registerEndpoint({ method: 'GET', uri: '/:id/around', handlers: [this.getAroundHandler], description: 'Gets users around an user' });
         this.registerEndpoint({ method: 'PUT', uri: '/:id', handlers: [this.modifyHandler], description: 'Modifies an user' });
         this.registerEndpoint({ method: 'PATCH', uri: '/:id', handlers: [this.updateHandler], description: 'Updates an user' });
         this.registerEndpoint({ method: 'DELETE', uri: '/:id', handlers: [this.deleteHandler], description: 'Deletes an user' });
@@ -109,6 +111,41 @@ export default class UserController extends Controller {
                 return res.status(404).json({ error: 'User not found' });
             }
             return res.status(200).json(user);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: err.message });
+        }
+    }
+
+    /**
+     * Gets users around an user.
+     * 
+     * This method is a handler / endpoint :
+     * - Method : `GET`
+     * - URI : `/:id/around`
+     * 
+     * @param req Express request
+     * @param res Express response
+     * @async
+     */
+    public async getAroundHandler(req: Request, res: Response): Promise<any> {
+        try {
+            const user = await this.container.db.users.findById(req.params.id);
+            if (!user) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+            const users = (await this.container.db.users.find().where('_id').ne(user.id)).sort((user1, user2) => {
+                const distanceFromUser1 = this.container.geo.distance(user.localization.lat, user.localization.lon, user1.localization.lat, user1.localization.lon);
+                const distanceFromUser2 = this.container.geo.distance(user.localization.lat, user.localization.lon, user2.localization.lat, user2.localization.lon);
+                if (distanceFromUser1 < distanceFromUser2) {
+                    return -1;
+                } else if (distanceFromUser1 > distanceFromUser2) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            });
+            return res.status(200).json({ users });
         } catch (err) {
             console.error(err);
             return res.status(500).json({ error: err.message });
