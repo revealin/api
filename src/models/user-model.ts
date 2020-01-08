@@ -26,6 +26,7 @@ export interface UserAttributes extends Attributes {
         reason: string;
     }];
     pictures: [{
+        _id?: string;
         base64: string;
         order: number;
     }];
