@@ -8,6 +8,7 @@ import ConfigurationService from './configuration-service';
 import PermissionService from './permission-service';
 import WebSocketService from './websocket-service';
 import PictureService from './picture-service';
+import GeolocationService from './geolocation-service';
 
 /**
  * Services container class.
@@ -43,6 +44,7 @@ export default class ServiceContainer {
     private _perms: PermissionService;
     private _socket: WebSocketService;
     private _pics: PictureService;
+    private _geo: GeolocationService;
 
     /**
      * Creates a new services container.
@@ -129,5 +131,13 @@ export default class ServiceContainer {
             console.log('Loaded pictures service');
         }
         return this._pics;
+    }
+
+    public get geo() {
+        if (!this._geo) {
+            this._geo = new GeolocationService(this);
+            console.log('Loaded geolocation service');
+        }
+        return this._geo;
     }
 }
