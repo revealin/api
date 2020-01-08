@@ -1,0 +1,17 @@
+{
+    "user": {
+        "default": true,
+        "permissions": [
+            "perm.1",
+            "perm.2"
+        ]
+    },
+    "admin": {
+        "permissions": [
+            "perm.1",
+            "perm.2",
+            "perm.3",
+            "perm.4"
+        ]
+    }
+}

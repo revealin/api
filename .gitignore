@@ -1,0 +1,11 @@
+# Node
+node_modules/
+
+# TypeScript build
+build/
+
+# Environment
+.env
+
+# Configuration
+config/permissions.json
