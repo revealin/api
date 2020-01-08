@@ -43,7 +43,10 @@ export default class AuthenticationController extends Controller {
                 localization: req.body.localization
             });
             const token = await this.container.auth.encodeToken({ userId: user.id }, process.env.TOKEN_KEY, Number(process.env.TOKEN_EXP));
-            return res.status(201).json({ token });
+            return res.status(201).json({
+                id: user.id,
+                token
+            });
         } catch (err) {
             console.error(err);
             return res.status(500).json({ error: err.message });
@@ -71,7 +74,10 @@ export default class AuthenticationController extends Controller {
                 return res.status(401).json({ error: 'Invalid password' });
             }
             const token = await this.container.auth.encodeToken({ userId: user.id }, process.env.TOKEN_KEY, Number(process.env.TOKEN_EXP));
-            return res.status(200).json({ token });
+            return res.status(200).json({
+                id: user.id,
+                token
+            });
         } catch (err) {
             console.error(err);
             return res.status(500).json({ error: err.message });
