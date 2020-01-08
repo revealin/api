@@ -321,7 +321,7 @@ export default class UserController extends Controller {
                 order: user.pictures.length
             });
             await user.save();
-            return res.status(201).json();
+            return res.status(201).json({ id: user.pictures[user.pictures.length - 1]._id });
         } catch (err) {
             console.error(err);
             return res.status(500).json({ error: err.message });
