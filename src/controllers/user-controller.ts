@@ -23,6 +23,7 @@ export default class UserController extends Controller {
         this.getMatchesHandler = this.getMatchesHandler.bind(this);
         this.addLikeHandler = this.addLikeHandler.bind(this);
         this.addNopeHandler = this.addNopeHandler.bind(this);
+        this.addRevealHandler = this.addRevealHandler.bind(this);
         this.modifyHandler = this.modifyHandler.bind(this);
         this.updateHandler = this.updateHandler.bind(this);
         this.deleteHandler = this.deleteHandler.bind(this);
@@ -38,6 +39,7 @@ export default class UserController extends Controller {
         this.registerEndpoint({ method: 'GET', uri: '/:id/matches', handlers: [this.getMatchesHandler], description: 'Gets matches for an user' });
         this.registerEndpoint({ method: 'PATCH', uri: '/:id/like', handlers: [this.addLikeHandler], description: 'Add like for an user' });
         this.registerEndpoint({ method: 'PATCH', uri: '/:id/nope', handlers: [this.addNopeHandler], description: 'Add nope for an user' });
+        this.registerEndpoint({ method: 'PATCH', uri: '/:id/reveal', handlers: [this.addRevealHandler], description: 'Add reveal for an user' });
         this.registerEndpoint({ method: 'PUT', uri: '/:id', handlers: [this.modifyHandler], description: 'Modifies an user' });
         this.registerEndpoint({ method: 'PATCH', uri: '/:id', handlers: [this.updateHandler], description: 'Updates an user' });
         this.registerEndpoint({ method: 'DELETE', uri: '/:id', handlers: [this.deleteHandler], description: 'Deletes an user' });
@@ -237,6 +239,38 @@ export default class UserController extends Controller {
             }
             if (user.nopes.includes(req.body.target)) {
                 return res.status(400).json({ error: 'Target is already noped' });
+            }
+            user.nopes.push(req.body.target);
+            await user.save();
+            return res.status(200).json();
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: err.message });
+        }
+    }
+
+    /**
+     * Add reveal for an user.
+     * 
+     * This method is a handler / endpoint :
+     * - Method : `POST`
+     * - URI : `/:id/reveal`
+     * 
+     * @param req Express request
+     * @param res Express response
+     * @async
+     */
+    public async addRevealHandler(req: Request, res: Response): Promise<any> {
+        try {
+            const user = await this.container.db.users.findById(req.params.id);
+            if (!user) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+            if (!req.body.target) {
+                return res.status(400).json({ error: 'Target is required' });
+            }
+            if (user.nopes.includes(req.body.target)) {
+                return res.status(400).json({ error: 'Target is already revealed' });
             }
             user.nopes.push(req.body.target);
             await user.save();
