@@ -20,6 +20,9 @@ export default class UserController extends Controller {
         this.getAllHandler = this.getAllHandler.bind(this);
         this.getSpecificHandler = this.getSpecificHandler.bind(this);
         this.getAroundHandler = this.getAroundHandler.bind(this);
+        this.getMatchesHandler = this.getMatchesHandler.bind(this);
+        this.addLikeHandler = this.addLikeHandler.bind(this);
+        this.addNopeHandler = this.addNopeHandler.bind(this);
         this.modifyHandler = this.modifyHandler.bind(this);
         this.updateHandler = this.updateHandler.bind(this);
         this.deleteHandler = this.deleteHandler.bind(this);
@@ -32,6 +35,9 @@ export default class UserController extends Controller {
         this.registerEndpoint({ method: 'GET', uri: '/', handlers: [this.getAllHandler], description: 'Gets all users' });
         this.registerEndpoint({ method: 'GET', uri: '/:id', handlers: [this.getSpecificHandler], description: 'Gets a specific user' });
         this.registerEndpoint({ method: 'GET', uri: '/:id/around', handlers: [this.getAroundHandler], description: 'Gets users around an user' });
+        this.registerEndpoint({ method: 'GET', uri: '/:id/matches', handlers: [this.getMatchesHandler], description: 'Gets matches for an user' });
+        this.registerEndpoint({ method: 'PATCH', uri: '/:id/like', handlers: [this.addLikeHandler], description: 'Add like for an user' });
+        this.registerEndpoint({ method: 'PATCH', uri: '/:id/nope', handlers: [this.addNopeHandler], description: 'Add nope for an user' });
         this.registerEndpoint({ method: 'PUT', uri: '/:id', handlers: [this.modifyHandler], description: 'Modifies an user' });
         this.registerEndpoint({ method: 'PATCH', uri: '/:id', handlers: [this.updateHandler], description: 'Updates an user' });
         this.registerEndpoint({ method: 'DELETE', uri: '/:id', handlers: [this.deleteHandler], description: 'Deletes an user' });
@@ -146,6 +152,95 @@ export default class UserController extends Controller {
                 }
             });
             return res.status(200).json({ users });
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: err.message });
+        }
+    }
+
+    /**
+     * Gets matches for an user.
+     * 
+     * This method is a handler / endpoint :
+     * - Method : `GET`
+     * - URI : `/:id/matches`
+     * 
+     * @param req Express request
+     * @param res Express response
+     * @async
+     */
+    public async getMatchesHandler(req: Request, res: Response): Promise<any> {
+        try {
+            const user = await this.container.db.users.findById(req.params.id);
+            if (!user) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+            const matches = (await this.container.db.users.find().where('_id').ne(user.id)).filter(anotherUser => user.likes.includes(anotherUser.id) && anotherUser.likes.includes(user.id));
+            return res.status(200).json({ matches });
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: err.message });
+        }
+    }
+
+    /**
+     * Add like for an user.
+     * 
+     * This method is a handler / endpoint :
+     * - Method : `POST`
+     * - URI : `/:id/like`
+     * 
+     * @param req Express request
+     * @param res Express response
+     * @async
+     */
+    public async addLikeHandler(req: Request, res: Response): Promise<any> {
+        try {
+            const user = await this.container.db.users.findById(req.params.id);
+            if (!user) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+            if (!req.body.target) {
+                return res.status(400).json({ error: 'Target is required' });
+            }
+            if (user.likes.includes(req.body.target)) {
+                return res.status(400).json({ error: 'Target is already liked' });
+            }
+            user.likes.push(req.body.target);
+            await user.save();
+            return res.status(200).json();
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: err.message });
+        }
+    }
+
+    /**
+     * Add nope for an user.
+     * 
+     * This method is a handler / endpoint :
+     * - Method : `POST`
+     * - URI : `/:id/nope`
+     * 
+     * @param req Express request
+     * @param res Express response
+     * @async
+     */
+    public async addNopeHandler(req: Request, res: Response): Promise<any> {
+        try {
+            const user = await this.container.db.users.findById(req.params.id);
+            if (!user) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+            if (!req.body.target) {
+                return res.status(400).json({ error: 'Target is required' });
+            }
+            if (user.nopes.includes(req.body.target)) {
+                return res.status(400).json({ error: 'Target is already noped' });
+            }
+            user.nopes.push(req.body.target);
+            await user.save();
+            return res.status(200).json();
         } catch (err) {
             console.error(err);
             return res.status(500).json({ error: err.message });
