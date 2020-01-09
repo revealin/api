@@ -356,7 +356,7 @@ export default class UserController extends Controller {
             if (req.body.description) {
                 user.description = req.body.description;
             }
-            if (req.body.banned) {
+            if (req.body.banned !== undefined) {
                 user.banned = req.body.banned;
             }
             if (req.body.localization) {
