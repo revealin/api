@@ -269,10 +269,10 @@ export default class UserController extends Controller {
             if (!req.body.target) {
                 return res.status(400).json({ error: 'Target is required' });
             }
-            if (user.nopes.includes(req.body.target)) {
+            if (user.reveals.includes(req.body.target)) {
                 return res.status(400).json({ error: 'Target is already revealed' });
             }
-            user.nopes.push(req.body.target);
+            user.reveals.push(req.body.target);
             await user.save();
             return res.status(200).json();
         } catch (err) {
